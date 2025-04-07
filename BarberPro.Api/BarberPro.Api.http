@@ -1,0 +1,6 @@
+@BarberPro.Api_HostAddress = http://localhost:5156
+
+GET {{BarberPro.Api_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
