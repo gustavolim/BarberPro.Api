@@ -2,7 +2,8 @@ CREATE TABLE IF NOT EXISTS Usuario (
     Id TEXT PRIMARY KEY,
     Nome TEXT NOT NULL,
     Email TEXT NOT NULL,
-    EhBarbeiro INTEGER NOT NULL
+    EhBarbeiro INTEGER NOT NULL,
+    SenhaHash TEXT
 );
 
 CREATE TABLE IF NOT EXISTS Agendamento (

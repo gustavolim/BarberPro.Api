@@ -15,6 +15,8 @@ namespace BarberPro.Api.Configuration
             services.AddScoped<IAgendamentoRepository, AgendamentoRepository>();
             services.AddScoped<IUsuarioService, UsuarioService>();
             services.AddScoped<IAgendamentoService, AgendamentoService>();
+            services.AddScoped<IAuthService, AuthService>();
+
             return services;
         }
     }

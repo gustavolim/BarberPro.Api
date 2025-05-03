@@ -1,5 +1,9 @@
-﻿using Microsoft.Data.Sqlite;
+﻿using BarberPro.Infra.Data;
+using LinqToDB;
+using Microsoft.Data.Sqlite;
 using System.Data.SQLite;
+using System.Security.Cryptography;
+using System.Text;
 
 namespace BarberPro.Api.Configuration
 {
@@ -21,6 +25,25 @@ namespace BarberPro.Api.Configuration
             var command = connection.CreateCommand();
             command.CommandText = sql;
             await command.ExecuteNonQueryAsync();
+
+            using var context = new DatabaseContext();
+            var usuarios = await context.Usuarios.ToListAsync();
+            foreach (var usuario in usuarios)
+            {
+                if (string.IsNullOrWhiteSpace(usuario.SenhaHash))
+                {
+                    usuario.SenhaHash = GerarHash("123456"); 
+                    await context.UpdateAsync(usuario);
+                }
+            }
+        }
+
+        private static string GerarHash(string input)
+        {
+            using var sha = SHA256.Create();
+            var bytes = Encoding.UTF8.GetBytes(input);
+            var hash = sha.ComputeHash(bytes);
+            return Convert.ToBase64String(hash);
         }
     }
 
