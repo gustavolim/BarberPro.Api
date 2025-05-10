@@ -18,6 +18,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\BarberPro.Api\BarberPro.Api.csproj" />
     <ProjectReference Include="..\BarberPro.Application\BarberPro.Application.csproj" />
     <ProjectReference Include="..\BarberPro.Domain\BarberPro.Domain.csproj" />
   </ItemGroup>
