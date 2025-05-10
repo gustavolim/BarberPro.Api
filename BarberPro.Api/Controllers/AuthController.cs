@@ -25,5 +25,23 @@ namespace BarberPro.Api.Controllers
                 return Unauthorized("Credenciais inválidas.");
             }
         }
+
+        [HttpPost("registro")]
+        public async Task<ActionResult<RegistroResponseDto>> Registro([FromBody] RegistroUsuarioDto request)
+        {
+            try
+            {
+                var resultado = await _authService.RegistrarUsuarioAsync(request);
+                return CreatedAtAction(nameof(Registro), resultado);
+            }
+            catch (InvalidOperationException ex)
+            {
+                return BadRequest(ex.Message);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Erro ao registrar usuário: {ex.Message}");
+            }
+        }
     }
 }

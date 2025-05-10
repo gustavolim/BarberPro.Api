@@ -1,4 +1,6 @@
 ﻿using BarberPro.Application.Interfaces;
+using BarberPro.Domain.DTOs;
+using BarberPro.Domain.Entities;
 using BarberPro.Domain.Interfaces;
 using System;
 using System.Collections.Generic;
@@ -25,6 +27,34 @@ namespace BarberPro.Application.Services
 
             // Aqui você pode gerar e retornar um JWT no futuro.
             return "usuario-autenticado"; // Placeholder para token
+        }
+
+        public async Task<RegistroResponseDto> RegistrarUsuarioAsync(RegistroUsuarioDto registro)
+        {
+            var usuarioExistente = (await _repo.ListarAsync())
+                .FirstOrDefault(u => u.Email == registro.Email);
+
+            if (usuarioExistente != null)
+                throw new InvalidOperationException("Email já cadastrado.");
+
+            var novoUsuario = new Usuario
+            {
+                Id = Guid.NewGuid(),
+                Nome = registro.Nome,
+                Email = registro.Email,
+                EhBarbeiro = registro.EhBarbeiro,
+                SenhaHash = GerarHash(registro.Senha)
+            };
+
+            var usuarioCriado = await _repo.CriarAsync(novoUsuario);
+
+            return new RegistroResponseDto
+            {
+                Id = usuarioCriado.Id,
+                Nome = usuarioCriado.Nome,
+                Email = usuarioCriado.Email,
+                EhBarbeiro = usuarioCriado.EhBarbeiro
+            };
         }
 
         public static string GerarHash(string input)
