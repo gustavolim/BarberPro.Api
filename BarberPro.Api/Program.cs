@@ -6,18 +6,28 @@ using System.Text.Json;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Adiciona serviços ao container
+// Adiciona serviï¿½os ao container
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-// Configuração do LINQ To DB
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowBarberProWebApp", policy =>
+    {
+        policy.WithOrigins("https://sistema-barbearia-web.vercel.app")
+              .AllowAnyHeader()
+              .AllowAnyMethod();
+    });
+});
+
+// Configuraï¿½ï¿½o do LINQ To DB
 Linq2DbConfig.Configurar(builder.Configuration.GetConnectionString("BarberProDB"));
 builder.Services.AddBarberProServices();
 
 var app = builder.Build();
 
-// Inicialização do banco de dados
+// Inicializaï¿½ï¿½o do banco de dados
 await DatabaseInitializer.InicializarAsync(builder.Configuration.GetConnectionString("BarberProDB"));
 
 // Seed do JSON
@@ -51,10 +61,12 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
+app.UseCors("AllowBarberProWebApp");
+
 app.UseHttpsRedirection();
 app.UseAuthorization();
 app.MapControllers();
 app.Run();
 
-// Record de apoio para deserialização
+// Record de apoio para deserializaï¿½ï¿½o
 record SeedData(List<Usuario> Usuarios, List<Agendamento> Agendamentos);
